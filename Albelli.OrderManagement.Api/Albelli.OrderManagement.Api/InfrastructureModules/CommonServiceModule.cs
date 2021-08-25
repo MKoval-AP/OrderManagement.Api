@@ -1,12 +1,6 @@
-﻿using Albelli.OrderManagement.Api.Configuration;
-using Albelli.OrderManagement.Api.Repositories;
+﻿using Albelli.OrderManagement.Api.Repositories;
 using Albelli.OrderManagement.Api.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Albelli.OrderManagement.Api.ConfgureServices
 {

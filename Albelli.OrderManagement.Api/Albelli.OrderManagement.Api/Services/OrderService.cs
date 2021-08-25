@@ -2,7 +2,6 @@
 using Albelli.OrderManagement.Api.Models;
 using Albelli.OrderManagement.Api.Repositories;
 using Albelli.OrderManagement.Api.Validators;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
