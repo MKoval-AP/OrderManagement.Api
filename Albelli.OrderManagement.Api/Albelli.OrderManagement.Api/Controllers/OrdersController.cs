@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Albelli.OrderManagement.Api.Models;
-using Albelli.OrderManagement.Api.Repositories;
+using Albelli.OrderManagement.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Albelli.OrderManagement.Api.Controllers
@@ -12,73 +10,41 @@ namespace Albelli.OrderManagement.Api.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private OrderRepository _orderRepository;
-        private ProductInfoRepository _productInfoRepository;
+        private readonly IOrderService orderService;
 
-        public OrdersController()
+        public OrdersController(IOrderService orderService)
         {
-            _orderRepository = new OrderRepository();
-            _productInfoRepository = new ProductInfoRepository();
+            this.orderService = orderService;
         }
 
-        [HttpPost("orders/place")]
-        public ActionResult PlaceOrder([FromBody] IEnumerable<OrderLine> items)
+        public IActionResult Place([FromBody] IEnumerable<OrderLine> items)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var orderLines = items.ToList();
-                var order = new Order { Items = orderLines, MinPackageWidth = PackageWidth(orderLines) };
-
-                _orderRepository.Add(order);
-
-                return Ok(order);
+                return BadRequest(ModelState);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
+
+            var guid = orderService.Create(items);
+
+            return Ok(guid);
         }
 
-        [HttpGet("order/{orderId}/retrieve")]
-        public async Task<IActionResult> RetrieveOrder(int orderId)
+        [HttpGet("{orderId}")]
+        public IActionResult Get([FromRoute] Guid orderId)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var order = _orderRepository.GetOrder(orderId);
-
-                if (order == null)
-                {
-                    throw new ArgumentException(orderId.ToString());
-                }
-
-                return Ok(order);
-            }
-            catch (ArgumentException ex)
-            {
-                return StatusCode(400, ex);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public double PackageWidth(IEnumerable<OrderLine> items)
-        {
-            double pw = 0;
-
-            foreach (var item in items)
-            {
-                var t = item.ProductType;
-                var q = item.Quantity;
-
-                var info = _productInfoRepository.Get(t);
-
-                pw += info.WidthMm * q;
+                return BadRequest(ModelState);
             }
 
-            return pw;
+            var order = orderService.Get(orderId);
+
+            if (order == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(order);
         }
     }
 }

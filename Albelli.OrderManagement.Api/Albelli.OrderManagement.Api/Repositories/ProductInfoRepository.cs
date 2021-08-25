@@ -4,31 +4,25 @@ using Albelli.OrderManagement.Api.Models;
 
 namespace Albelli.OrderManagement.Api.Repositories
 {
-    public class ProductInfoRepository
+    public class ProductInfoRepository : IProductInfoRepository
     {
-        private static readonly IDictionary<string, ProductInfo> _productInfo = new Dictionary<string, ProductInfo>()
+        private static readonly IDictionary<ProductType, double> productInfo = new Dictionary<ProductType, double>()
         {
-            { "PhotoBook", new ProductInfo { WidthMm = 19 } },
-            { "Calendar", new ProductInfo { WidthMm = 10 } },
-            { "Canvas", new ProductInfo { WidthMm = 16 } },
-            { "Cards", new ProductInfo { WidthMm = 4.7 } },
-            { "Mug", new ProductInfo { WidthMm = 94 } }
+            { ProductType.PhotoBook, 19 },
+            { ProductType.Calendar, 10 },
+            { ProductType.Canvas, 16 },
+            { ProductType.Cards, 4.7 },
+            { ProductType.Mug, 94 }
         };
 
-        public ProductInfo Get(string productType)
+        public double GetWidth(ProductType productType)
         {
-            if (!_productInfo.ContainsKey(productType))
+            if (!productInfo.ContainsKey(productType))
             {
-                throw new Exception($"No information available for product type {productType}.", null);
+                throw new Exception($"No information available for product type {productType}.");
             }
 
-            var info = _productInfo[productType];
-
-            return new ProductInfo
-            {
-                ProductType = productType,
-                WidthMm = info.WidthMm
-            };
+            return productInfo[productType];
         }
     }
 }

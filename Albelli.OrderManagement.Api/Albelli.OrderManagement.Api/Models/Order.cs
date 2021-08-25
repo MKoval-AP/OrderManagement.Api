@@ -5,8 +5,10 @@ namespace Albelli.OrderManagement.Api.Models
 {
     public class Order
     {
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
+
         public IEnumerable<OrderLine> Items { get; set; }
+
         public double MinPackageWidth { get; set; }
     }
 }
