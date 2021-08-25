@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Albelli.OrderManagement.Api.ConfgureServices;
+using Albelli.OrderManagement.Api.Configuration;
+using Albelli.OrderManagement.Api.Middlewares;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,19 +19,20 @@ namespace Albelli.OrderManagement.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
 
-            // Register the Swagger generator
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order Management API", Version = "v1" });
             });
+
+            services.AddCommonServices();
+            var config = Configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
+            services.AddScoped(c => config);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -41,7 +45,7 @@ namespace Albelli.OrderManagement.Api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order Management API V1");
             });
-
+            app.UseMiddleware<ExceptionHandler>();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
