@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Albelli.OrderManagement.Api.Calculations;
 using Albelli.OrderManagement.Api.Models;
 using Albelli.OrderManagement.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Albelli.OrderManagement.Api.Controllers
 {
@@ -27,7 +28,7 @@ namespace Albelli.OrderManagement.Api.Controllers
             try
             {
                 var orderLines = items.ToList();
-                var order = new Order { Items = orderLines, MinPackageWidth = PackageWidth(orderLines) };
+                var order = new Order { Items = orderLines, MinPackageWidth = PackageCalculator.PackageWidth(orderLines, _productInfoRepository) };
 
                 _orderRepository.Add(order);
 
@@ -63,22 +64,5 @@ namespace Albelli.OrderManagement.Api.Controllers
             }
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public double PackageWidth(IEnumerable<OrderLine> items)
-        {
-            double pw = 0;
-
-            foreach (var item in items)
-            {
-                var t = item.ProductType;
-                var q = item.Quantity;
-
-                var info = _productInfoRepository.Get(t);
-
-                pw += info.WidthMm * q;
-            }
-
-            return pw;
-        }
     }
 }
