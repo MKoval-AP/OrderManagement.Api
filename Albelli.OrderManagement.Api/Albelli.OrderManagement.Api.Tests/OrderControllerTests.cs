@@ -13,7 +13,7 @@ namespace Albelli.OrderManagement.Api.Tests
             var orderController = new OrdersController();
 
             var lines = new List<OrderLine>();
-            lines.Add(new OrderLine { ProductType = "Calendar", Quantity = 2});
+            lines.Add(new OrderLine { ProductType = ProductType.Calendar, Quantity = 2});
 
             var res = orderController.PackageWidth(lines);
 
@@ -26,7 +26,7 @@ namespace Albelli.OrderManagement.Api.Tests
             var orderController = new OrdersController();
 
             var lines = new List<OrderLine>();
-            lines.Add(new OrderLine { ProductType = "Mug", Quantity = 5 });
+            lines.Add(new OrderLine { ProductType = ProductType.Mug, Quantity = 5 });
 
             var res = orderController.PackageWidth(lines);
 

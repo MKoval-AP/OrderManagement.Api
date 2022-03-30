@@ -1,21 +1,21 @@
-﻿using System;
+﻿using Albelli.OrderManagement.Api.Models;
+using System;
 using System.Collections.Generic;
-using Albelli.OrderManagement.Api.Models;
 
 namespace Albelli.OrderManagement.Api.Repositories
 {
     public class ProductInfoRepository
     {
-        private static readonly IDictionary<string, ProductInfo> _productInfo = new Dictionary<string, ProductInfo>()
+        private static readonly IDictionary<ProductType, ProductInfo> _productInfo = new Dictionary<ProductType, ProductInfo>()
         {
-            { "PhotoBook", new ProductInfo { WidthMm = 19 } },
-            { "Calendar", new ProductInfo { WidthMm = 10 } },
-            { "Canvas", new ProductInfo { WidthMm = 16 } },
-            { "Cards", new ProductInfo { WidthMm = 4.7 } },
-            { "Mug", new ProductInfo { WidthMm = 94 } }
+            { ProductType.PhotoBook, new ProductInfo { WidthMm = 19 } },
+            { ProductType.Calendar, new ProductInfo { WidthMm = 10 } },
+            { ProductType.Canvas, new ProductInfo { WidthMm = 16 } },
+            { ProductType.Cards, new ProductInfo { WidthMm = 4.7 } },
+            { ProductType.Mug, new ProductInfo { WidthMm = 94 } }
         };
 
-        public ProductInfo Get(string productType)
+        public ProductInfo Get(ProductType productType)
         {
             if (!_productInfo.ContainsKey(productType))
             {
