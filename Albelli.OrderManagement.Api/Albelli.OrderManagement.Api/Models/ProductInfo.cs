@@ -2,7 +2,7 @@
 {
     public class ProductInfo
     {
-        public string ProductType { get; set; }
+        public ProductType ProductType { get; set; }
         public double WidthMm { get; set; }
     }
 }

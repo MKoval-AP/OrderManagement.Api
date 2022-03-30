@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Albelli.OrderManagement.Api.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Albelli.OrderManagement.Api.Models;
 
 namespace Albelli.OrderManagement.Api.Repositories
 {
@@ -11,7 +10,7 @@ namespace Albelli.OrderManagement.Api.Repositories
         {
             new Order { OrderId = 1, MinPackageWidth = 19, Items = new List<OrderLine>
             {
-                new OrderLine { ProductType = "PhotoBook", Quantity = 1 }
+                new OrderLine { ProductType = ProductType.PhotoBook, Quantity = 1 }
             }}
         };
 
