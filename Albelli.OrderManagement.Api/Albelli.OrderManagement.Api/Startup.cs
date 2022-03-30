@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json.Serialization;
 
 namespace Albelli.OrderManagement.Api
 {
@@ -21,11 +21,12 @@ namespace Albelli.OrderManagement.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddMvc().AddJsonOptions(opts =>
+            services.AddControllers().AddNewtonsoftJson(options =>
                 {
-                    var enumConverter = new JsonStringEnumConverter();
-                    opts.JsonSerializerOptions.Converters.Add(enumConverter);
-                });
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                }
+            );
 
             // Register the Swagger generator
             services.AddSwaggerGen(c =>
