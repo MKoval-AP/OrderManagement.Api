@@ -5,15 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Albelli.OrderManagement.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
-        private OrderRepository _orderRepository;
+        private OrderRepository _orderRepository; //TODO: Use DI to avoid tight coupling, if for some reason this objects is required at controller level.
         private ProductInfoRepository _productInfoRepository;
 
         public OrdersController()
@@ -26,8 +25,8 @@ namespace Albelli.OrderManagement.Api.Controllers
         public ActionResult PlaceOrder([FromBody] IEnumerable<OrderLine> items)
         {
             try
-            {
-                var orderLines = items.ToList();
+            { 
+                var orderLines = items.ToList(); 
                 var order = new Order { Items = orderLines, MinPackageWidth = PackageCalculator.PackageWidth(orderLines, _productInfoRepository) };
 
                 _orderRepository.Add(order);
@@ -36,16 +35,16 @@ namespace Albelli.OrderManagement.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, ex); //TODO: For both action methods. Provide request data validation and provide response code which fits better.
             }
         }
 
         [HttpGet("order/{orderId}/retrieve")]
-        public async Task<IActionResult> RetrieveOrder(int orderId)
+        public ActionResult RetrieveOrder(int orderId) // TODO: this method does not return awaitable type, so synchronous method signature was used.
         {
             try
             {
-                var order = _orderRepository.GetOrder(orderId);
+                Order order = _orderRepository.GetOrder(orderId);
 
                 if (order == null)
                 {
@@ -60,7 +59,7 @@ namespace Albelli.OrderManagement.Api.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw ex; // TODO: In case such exception interception is required, then original one should be logged and new one should be thrown only with relevant information.
             }
         }
 

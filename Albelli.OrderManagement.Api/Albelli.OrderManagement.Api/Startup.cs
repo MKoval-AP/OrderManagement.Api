@@ -27,6 +27,7 @@ namespace Albelli.OrderManagement.Api
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 }
             );
+            // TODO: Configure authentication and authorization depending on requirements.
 
             // Register the Swagger generator
             services.AddSwaggerGen(c =>
