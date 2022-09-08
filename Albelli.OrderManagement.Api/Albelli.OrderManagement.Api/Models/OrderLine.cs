@@ -5,7 +5,7 @@ namespace Albelli.OrderManagement.Api.Models
 {
     public class OrderLine
     {
-        public string ProductType { get; set; }
+        public ProductType ProductType { get; set; }
         public int Quantity { get; set; }
     }
 }
