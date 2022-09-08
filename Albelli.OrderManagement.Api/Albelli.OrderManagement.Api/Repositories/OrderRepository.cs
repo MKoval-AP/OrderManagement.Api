@@ -5,13 +5,13 @@ using Albelli.OrderManagement.Api.Models;
 
 namespace Albelli.OrderManagement.Api.Repositories
 {
-    public class OrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private static readonly IList<Order> _orders = new List<Order>
         {
             new Order { OrderId = 1, MinPackageWidth = 19, Items = new List<OrderLine>
             {
-                new OrderLine { ProductType = "PhotoBook", Quantity = 1 }
+                new OrderLine { ProductType = ProductType.PhotoBook, Quantity = 1 }
             }}
         };
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Albelli.OrderManagement.Api.Models;
 using Albelli.OrderManagement.Api.Repositories;
+using Albelli.OrderManagement.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Albelli.OrderManagement.Api.Controllers
@@ -12,73 +13,22 @@ namespace Albelli.OrderManagement.Api.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private OrderRepository _orderRepository;
-        private ProductInfoRepository _productInfoRepository;
+        private readonly IOrderService _orderService;
 
-        public OrdersController()
+        public OrdersController(IOrderService orderService)
         {
-            _orderRepository = new OrderRepository();
-            _productInfoRepository = new ProductInfoRepository();
+            this._orderService = orderService;
         }
 
-        [HttpPost("orders/place")]
-        public ActionResult PlaceOrder([FromBody] IEnumerable<OrderLine> items)
+        [HttpPost]
+        public IActionResult PlaceOrder([FromBody] IEnumerable<OrderLine> items)
         {
-            try
-            {
-                var orderLines = items.ToList();
-                var order = new Order { Items = orderLines, MinPackageWidth = PackageWidth(orderLines) };
-
-                _orderRepository.Add(order);
-
-                return Ok(order);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
+            var order = _orderService.PlaceOrder(items);
+            return Ok(order);
         }
 
-        [HttpGet("order/{orderId}/retrieve")]
-        public async Task<IActionResult> RetrieveOrder(int orderId)
-        {
-            try
-            {
-                var order = _orderRepository.GetOrder(orderId);
+        [HttpGet("{orderId}")]
+        public IActionResult RetrieveOrder(int orderId) => Ok(_orderService.GetOrder(orderId));
 
-                if (order == null)
-                {
-                    throw new ArgumentException(orderId.ToString());
-                }
-
-                return Ok(order);
-            }
-            catch (ArgumentException ex)
-            {
-                return StatusCode(400, ex);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public double PackageWidth(IEnumerable<OrderLine> items)
-        {
-            double pw = 0;
-
-            foreach (var item in items)
-            {
-                var t = item.ProductType;
-                var q = item.Quantity;
-
-                var info = _productInfoRepository.Get(t);
-
-                pw += info.WidthMm * q;
-            }
-
-            return pw;
-        }
     }
 }
